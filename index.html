@@ -1,17 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Choose Wisely</title>
-    <link rel="stylesheet" href="reset.css">
-    <link rel="stylesheet" href="style.css">
-  </head>
 
-  <body>
-    <section>
-      <img id="image-one" src="#" alt="img-one">
-      
-      <img id="image-two" src="#" alt="img-two">  
-    </section>
-  </body>
-  <script src="app.js"></script>
+<head>
+  <title>Choose Wisely</title>
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<header>
+  <h1>Lab 11 - Bus Mall</h1>
+
+  <div id='surveyText'>
+    <h2 class='surveyTitle'>Congratulations! You Have Been Selected to Complete a Special Survey!</h2>
+    <p>Hello and congratulations, dear user! You have been selected to participate in a brand popularity survey from the
+      proud publishers at &copy;BusMall Magazine.
+      <br>
+      <br>
+      Below you'll find a group of three random products. Click on the most appealing to you out of the three presented
+      and repeat until propmepted to do stop.
+      <br>
+      <br>
+      Finish all 25 survey groups to receive $5 in Bus-Bucks towards your next purchase!
+    </p>    
+  </div>
+  <h3>Our Select Survey Items of the Day:</h3>
+</header>
+
+<body>
+
+  <section id='surveyItemGrp'>
+    <img class='surveyItem' id="image-one" src="#" alt="img-one" width="33%" height="30%">
+
+    <img class='surveyItem' id="image-two" src="#" alt="img-two" width="33%" height="30%">
+
+    <img class='surveyItem' id="image-three" src="#" alt="img-three" width="30%" height="33%">
+  </section>
+
+  <section id='surveyResults'>
+    
+  </section>
+</body>
+<script src="app.js"></script>
+
 </html>

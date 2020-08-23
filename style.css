@@ -1,0 +1,64 @@
+body{
+  background-color: rgb(4, 102, 133);
+}
+
+h1{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 100px;
+  text-align: center;
+  margin-left: 30%;
+  margin-bottom: 50px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  width: 850px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  border: 4px #ff9d00 solid;
+  font-weight: bold;
+  color: white;
+}
+
+h3{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 100px;
+  text-align: center;
+  margin-bottom: 15px;
+  padding-top: 70px;
+  width: 100%;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  font-weight: bold;
+  color: #FF4500;
+}
+
+.surveyTitle{
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 50px;
+  
+  margin-bottom: 35px;
+  width: 100%;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  
+  font-weight: bold;
+  color: white;
+}
+
+#surveyText{
+  font-size: 25px;
+  padding: 15px;
+  border: 4px #ff9d00 solid;
+  color: white;
+  width: 100%;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+#surveyItemGrp{
+  border: 4px #ff9d00 solid;
+  background-color: white;
+}
+
+.surveyItem{
+  border: 1px #000000 solid;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  margin-left: .75%;
+  
+}
