@@ -2,8 +2,17 @@
 
 ///////////////////////////////////////////////////Lab 12 - Codefellows 201////////////////////////////////////////////////////////////
 
-//*********************************************"Add a Chart to Your BusMall App"**************************************************//
 
+//*********************************************"Add a Chart to Your BusMall App"**************************************************//
+//Global Variables:
+//var imgArray[] - an Array to contain all the image objects created by the constructor
+//var imgOne - an html object assigned the value of document.getElementById('image-one');
+//var imgTwo - an html object assigned the value of document.getElementById('image-two');
+//var imgThree - an html object assigned the value of document.getElementById('image-three');
+//var allClicks - maintains a running count of how many rounds the survey has gonne on for, default of 0
+//var surveyLimit - the maximum number of survey rounds, default of 25
+
+//LOGIC FLOW:
 //1.this app constructs 3 objects that generate images in groups of 3 with the renderApp() function.
 //                                             V
 
@@ -127,7 +136,7 @@ function renderImages() {
   }
 
   //3.
-  for(var j = 0; j < imgArray.length; j++){
+  for (var j = 0; j < imgArray.length; j++) {
     imgArray[j].used = false;
   }
 
@@ -147,8 +156,8 @@ function renderImages() {
   imgThree.alt = randImgThree.name;
 
   //7.
-  for(var i = 0; i < imgArray.length; i++){
-    if(imgOne.alt === imgArray[i].name || imgTwo.alt === imgArray[i].name || imgThree.alt === imgArray[i].name){
+  for (var i = 0; i < imgArray.length; i++) {
+    if (imgOne.alt === imgArray[i].name || imgTwo.alt === imgArray[i].name || imgThree.alt === imgArray[i].name) {
       imgArray[i].viewed++;
     }
   }
@@ -175,43 +184,31 @@ imgTwo.addEventListener('click', clickedPic);
 imgThree.addEventListener('click', clickedPic);
 
 
-//-------------------------------------Function renderImages()-------------------------------------------//
+//-------------------------------------EventHandler clickedPic(e)-------------------------------------------//
 //Parameters://
-//none//
+//e - the 'click' event from imgOne-Three//
 
 //Local Variables
-//var randImgOne - an image object meant to be filled with a random image element selected from the imgArray[] by the mathRand(max) function
-//var randImgTwo - an image object meant to be filled with a random image element selected from the imgArray[] by the mathRand(max) function
-//var randImgThree - an image object meant to be filled with a random image element selected from the imgArray[] by the mathRand(max) function
+//none
 
-//1. randImgOne-Three are created as one of the 20 product objects created.
+//1. first allClicks is incremented by 1 to keep track of how many rounds of voting has occured
 //                                      V
 
-//2. randImgOne-Three are checked for copies, and then to see if they were used in the previous round and recreated if any are found        until we have 3 new products that weren't seen the last survey round. 
+//2.  if the last round hasn't been reached yet, the imgArray[] is sorted through in the for loop to increment the .clicked property of the selected item for this round. then new imags are rendered and the for loop ends.
 //                                      V
 
-//3. all items in the imgArray have their .used property set to false
-//                                      V
-
-//4. randImgOne-Three have their .used property set to true so they may be found next time renderImages is invoked
-//                                      V
-
-//5. the html objects imgOne-Three have their .src properties set to the .src of randImgOne-Three
-//                                      V
-
-//6. the html objects imgOne-Three have their .alt properties set to the .name of randImgOne-Three
-//                                      V
-
-//7. all image objects displayed during this round have their .viewed property incremented++
+//3. if the last round has been reached, then the event listeners are all removed, the image displays removed, and the bargraph info rendered.
 //                                      V
 
 //returns:                           nothing
-//                                      V
 
 //                                     END
 //_______________________________________________________________________________________________________________//
 function clickedPic(e) {
+  //1.
   allClicks++;
+
+  //2.
   if (allClicks <= surveyLimit) {
     for (var i = 0; i < imgArray.length; i++) {
       if (imgArray[i].name === e.target.alt) {
@@ -221,6 +218,7 @@ function clickedPic(e) {
       }
     }
   }
+  //3.
   else if (allClicks >= surveyLimit) {
     imgOne.removeEventListener('click', clickedPic);
     imgTwo.removeEventListener('click', clickedPic);
@@ -229,30 +227,89 @@ function clickedPic(e) {
     imgTwo.remove();
     imgThree.remove();
 
-    var report = document.getElementById('surveyResults');
-    var h2Element = document.createElement('h2');
-    h2Element.style.color = 'white';
-    h2Element.style.fontSize = '50px';
-    h2Element.style.lineHeight = '150%';
-    var listElement = document.createElement('ul');
-    h2Element.textContent = 'Here Are Your Survey Results:';
-    report.appendChild(h2Element);
-    report.appendChild(listElement);
-
-    //for loop runs through imgArray[], and lists their individual results in a list
-    for (var j = 0; j < imgArray.length; j++) {
-      var liElement = document.createElement('li');
-      liElement.textContent = 'Product Name: ' + imgArray[j].name + ' was selected ' + imgArray[j].clicked + ' times and was viewed ' + imgArray[j].viewed + ' times.';
-      listElement.appendChild(liElement);
-      listElement.style.color = 'white';
-      listElement.style.fontSize = '25px';
-      listElement.style.lineHeight = '150%';
-    }
+    renderBargraph();
   }
 }
 
-function renderBargraph(){
+//-------------------------------------Function renderBargraph()-------------------------------------------//
+//Parameters://
+//none//
 
+//Local Variables
+//var productNameArray - array used to store the names of all the products to be labeled in the bargraph
+//var totalClicksArray - array used to store the total times the user clicked each product
+//var totalViewsArray - array used to store the total times each product was displayed on screen
+//var data1ColorArray - array used to store the color of the bar graph element for the # of clicks
+//var data2ColorArray - array used to store the color of the bar graph element for the # of views
+//var ctx - this is a reference to our chart's id in index.html
+
+//1. first all the arrays are filled with its respective product information.
+//                                      V
+
+//2.  the bargraph is created as a new object literal.
+//                                      V
+
+//3. ctx is assigned the value of the html canvas with the id #results. all the font elements are customized, then the bargraph object is rendered on the page.
+//                                      V
+
+//returns:                           nothing
+
+//                                     END
+//_______________________________________________________________________________________________________________//
+function renderBargraph() {
+  //local variables
+  var productNameArray = [];
+  var totalClicksArray = [];
+  var totalViewsArray = [];
+  var data1ColorArray = [];
+  var data2ColorArray = [];
+
+  //1.
+  for(var k = 0; k < imgArray.length; k++){
+    productNameArray.push(imgArray[k].name);
+    totalClicksArray.push(imgArray[k].clicked);
+    totalViewsArray.push(imgArray[k].viewed);
+    data1ColorArray.push('rgba(255, 180, 76, 1)');
+    data2ColorArray.push('rgba(54, 200, 235, 1)');
+  }
+
+  //2.
+  var barGraphObject = {
+    type: 'horizontalBar',
+    data: {
+      labels: productNameArray,
+      datasets: [{
+        label: '# of Clicks',
+        data: totalClicksArray,
+        backgroundColor: data1ColorArray,
+        borderColor: data1ColorArray,
+        borderWidth: 1
+      }, {
+        label: '# of Total Views',
+        data: totalViewsArray,
+        backgroundColor: data2ColorArray,
+        borderColor: data2ColorArray,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  };
+  //3.
+  var ctx = document.getElementById('results').getContext('2d');
+  Chart.defaults.global.defaultFontStyle = 'bold';//eslint-disable-line
+  Chart.defaults.global.defaultFontColor = 'white';//eslint-disable-line
+  Chart.defaults.global.defaultFontSize = 30;//eslint-disable-line
+  var chart1 = new Chart(ctx, barGraphObject);//eslint-disable-line
 }
+
 //it begins....
 renderImages();
