@@ -1,9 +1,9 @@
 'use strict';
 
-///////////////////////////////////////////////////Lab 12 - Codefellows 201////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////Lab 13 - Codefellows 201////////////////////////////////////////////////////////////
 
 
-//*********************************************"Add a Chart to Your BusMall App"**************************************************//
+//*********************************************"Add Local Storage to BusMall App"**************************************************//
 //Global Variables:
 //var imgArray[] - an Array to contain all the image objects created by the constructor
 //var imgOne - an html object assigned the value of document.getElementById('image-one');
@@ -13,16 +13,18 @@
 //var surveyLimit - the maximum number of survey rounds, default of 25
 
 //LOGIC FLOW:
-//1.this app constructs 3 objects that generate images in groups of 3 with the renderApp() function.
+//1.this app constructs 3 objects that generate images in groups of 3 with the renderApp() function. If it has been used before it will populate the imgArray with information from prior visit, if not it will create 20 new image objects (hardcoded this way)
 //                                             V
 
 //2.The event handler clickedPic() then listens for which image the user clicks and removes the current images from the screen (incrementing the properties clicked for the selected image and viewed for all displayed in th process)
 //                                             V
 
-//3. This proceeds 25 times until the user selects the final image.
+//3. This proceeds 25 times (variable - 'surveyLimit') until the user selects the final image.
 //                                             V
 
-//4. After 25 rounds, the images are removed from the screen and a bar graph will be rendered in its place to display the survey results to the user and (eventually) adminstrator.
+//4. After the 'surveyLimit' amount of rounds, the images are removed from the screen and a bar graph will be rendered in its place to display the survey results to the user and (eventually) adminstrator.
+
+//5. Total number of clicks and times each image was displayed are stored to local storage for repeated uses of the site to keep a running total of all users who use this machine to survey.
 //                                            END
 //___________________________________________________________________________________________________________________________________//
 
@@ -64,28 +66,36 @@ function Picture(name, src) {
   imgArray.push(this);
 }
 
-//Picture('name of new Picture object', image file path)
-//Creates 20 survey items to populate the page with
-new Picture('bag', './img/bag.jpg');
-new Picture('banana', './img/banana.jpg');
-new Picture('bathroom', './img/bathroom.jpg');
-new Picture('boots', './img/boots.jpg');
-new Picture('breakfast', './img/breakfast.jpg');
-new Picture('bubblegum', './img/bubblegum.jpg');
-new Picture('chair', './img/chair.jpg');
-new Picture('cthulhu', './img/cthulhu.jpg');
-new Picture('dog-duck', './img/dog-duck.jpg');
-new Picture('dragon', './img/dragon.jpg');
-new Picture('pen', './img/pen.jpg');
-new Picture('pet-sweep', './img/pet-sweep.jpg');
-new Picture('scissors', './img/scissors.jpg');
-new Picture('shark', './img/shark.jpg');
-new Picture('sweep', './img/sweep.png');
-new Picture('tauntaun', './img/tauntaun.jpg');
-new Picture('unicorn', './img/unicorn.jpg');
-new Picture('usb', './img/usb.gif');
-new Picture('water-can', './img/water-can.jpg');
-new Picture('wine-glass', './img/wine-glass.jpg');
+//FIRST, we check to see if there is already an array stored for prior surveys taken on this machine. If so, we will just add on tot hat array.
+
+//If this is the user's first time taking this survey on this machine, then the product objects and imgArray are populated instead.
+if (localStorage.getItem('productArray') !== null) {
+  imgArray = JSON.parse(localStorage.getItem('productArray'));
+}
+else {
+  //Picture('name of new Picture object', image file path)
+  //Creates 20 survey items to populate the page with
+  new Picture('bag', './img/bag.jpg');
+  new Picture('banana', './img/banana.jpg');
+  new Picture('bathroom', './img/bathroom.jpg');
+  new Picture('boots', './img/boots.jpg');
+  new Picture('breakfast', './img/breakfast.jpg');
+  new Picture('bubblegum', './img/bubblegum.jpg');
+  new Picture('chair', './img/chair.jpg');
+  new Picture('cthulhu', './img/cthulhu.jpg');
+  new Picture('dog-duck', './img/dog-duck.jpg');
+  new Picture('dragon', './img/dragon.jpg');
+  new Picture('pen', './img/pen.jpg');
+  new Picture('pet-sweep', './img/pet-sweep.jpg');
+  new Picture('scissors', './img/scissors.jpg');
+  new Picture('shark', './img/shark.jpg');
+  new Picture('sweep', './img/sweep.png');
+  new Picture('tauntaun', './img/tauntaun.jpg');
+  new Picture('unicorn', './img/unicorn.jpg');
+  new Picture('usb', './img/usb.gif');
+  new Picture('water-can', './img/water-can.jpg');
+  new Picture('wine-glass', './img/wine-glass.jpg');
+}
 
 //-------------------------------------Function renderImages()-------------------------------------------//
 //Parameters://
@@ -99,7 +109,7 @@ new Picture('wine-glass', './img/wine-glass.jpg');
 //1. randImgOne-Three are created as one of the 20 product objects created.
 //                                      V
 
-//2. randImgOne-Three are checked for copies, and then to see if they were used in the previous round and recreated if any are found        until we have 3 new products that weren't seen the last survey round. 
+//2. randImgOne-Three are checked for copies, and then to see if they were used in the previous round and recreated if any are found        until we have 3 new products that weren't seen the last survey round.
 //                                      V
 
 //3. all items in the imgArray have their .used property set to false
@@ -158,7 +168,9 @@ function renderImages() {
   //7.
   for (var i = 0; i < imgArray.length; i++) {
     if (imgOne.alt === imgArray[i].name || imgTwo.alt === imgArray[i].name || imgThree.alt === imgArray[i].name) {
-      imgArray[i].viewed++;
+      if (allClicks < surveyLimit) {
+        imgArray[i].viewed++;
+      }
     }
   }
 }
@@ -189,15 +201,12 @@ imgThree.addEventListener('click', clickedPic);
 //e - the 'click' event from imgOne-Three//
 
 //Local Variables
-//none
+//none                                     V
 
-//1. first allClicks is incremented by 1 to keep track of how many rounds of voting has occured
+//1.  if the last round  of the survey (surveyLimit) hasn't been reached yet, the imgArray[] is sorted through in the for loop to increment the .clicked property of the selected item for this round. allClicks is incremented by 1 to keep track of how many rounds of voting has occured. then new images are rendered to the page with the function renderImages() and the for loop ends.
 //                                      V
 
-//2.  if the last round hasn't been reached yet, the imgArray[] is sorted through in the for loop to increment the .clicked property of the selected item for this round. then new imags are rendered and the for loop ends.
-//                                      V
-
-//3. if the last round has been reached, then the event listeners are all removed, the image displays removed, and the bargraph info rendered.
+//2. if the last round has been reached, then the event listeners are all removed, the image displays removed, and the bargraph info rendered with the renderBargraph() function.
 //                                      V
 
 //returns:                           nothing
@@ -206,20 +215,19 @@ imgThree.addEventListener('click', clickedPic);
 //_______________________________________________________________________________________________________________//
 function clickedPic(e) {
   //1.
-  allClicks++;
-
-  //2.
-  if (allClicks <= surveyLimit) {
+  if (allClicks < surveyLimit) {
     for (var i = 0; i < imgArray.length; i++) {
       if (imgArray[i].name === e.target.alt) {
         imgArray[i].clicked++;
+        allClicks++;
         renderImages();
         break;
       }
     }
   }
-  //3.
-  else if (allClicks >= surveyLimit) {
+
+  //2.
+  if (allClicks === surveyLimit) {
     imgOne.removeEventListener('click', clickedPic);
     imgTwo.removeEventListener('click', clickedPic);
     imgThree.removeEventListener('click', clickedPic);
@@ -236,20 +244,23 @@ function clickedPic(e) {
 //none//
 
 //Local Variables
-//var productNameArray - array used to store the names of all the products to be labeled in the bargraph
-//var totalClicksArray - array used to store the total times the user clicked each product
-//var totalViewsArray - array used to store the total times each product was displayed on screen
-//var data1ColorArray - array used to store the color of the bar graph element for the # of clicks
-//var data2ColorArray - array used to store the color of the bar graph element for the # of views
-//var ctx - this is a reference to our chart's id in index.html
+//- var productNameArray - array used to store the names of all the products to be labeled in the bargraph
+//- var totalClicksArray - array used to store the total times the user clicked each product
+//- var totalViewsArray - array used to store the total times each product was displayed on screen
+//- var data1ColorArray - array used to store the color of the bar graph element for the # of clicks
+//- var data2ColorArray - array used to store the color of the bar graph element for the # of views
+//- var ctx - this is a reference to our chart's id in index.html
 
-//1. first all the arrays are filled with its respective product information.
+//1. First, the arrays are filled with their respective product information from this round we just completed. All color bars are consistent for each category.
 //                                      V
 
 //2.  the bargraph is created as a new object literal.
 //                                      V
 
 //3. ctx is assigned the value of the html canvas with the id #results. all the font elements are customized, then the bargraph object is rendered on the page.
+//                                      V
+
+//4. the new imgArray (and its property totals) are stringified to JSON format then stored in the local storage for future uses of the site.
 //                                      V
 
 //returns:                           nothing
@@ -265,7 +276,7 @@ function renderBargraph() {
   var data2ColorArray = [];
 
   //1.
-  for(var k = 0; k < imgArray.length; k++){
+  for (var k = 0; k < imgArray.length; k++) {
     productNameArray.push(imgArray[k].name);
     totalClicksArray.push(imgArray[k].clicked);
     totalViewsArray.push(imgArray[k].viewed);
@@ -309,6 +320,11 @@ function renderBargraph() {
   Chart.defaults.global.defaultFontColor = 'white';//eslint-disable-line
   Chart.defaults.global.defaultFontSize = 30;//eslint-disable-line
   var chart1 = new Chart(ctx, barGraphObject);//eslint-disable-line
+
+  //4.
+  imgArray = JSON.stringify(imgArray);
+
+  localStorage.setItem('productArray', imgArray);
 }
 
 //it begins....
